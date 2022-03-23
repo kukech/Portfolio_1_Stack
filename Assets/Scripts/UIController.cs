@@ -1,22 +1,55 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using System;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour
 {
     [SerializeField] private GameObject mainMenu;
-    private SceneController sceneController;
+    [SerializeField] private TextMeshProUGUI score;
+    [SerializeField] private TextMeshProUGUI crystall;
+    [SerializeField] private Button backgroundButton;
+    private void Awake()
+    {
+        Messenger.AddListener(GameEvent.GAME_OVER, GameOver);
+    }
+    private void OnDestroy()
+    {
+        Messenger.RemoveListener(GameEvent.GAME_OVER, GameOver);
+    }
     private void Start()
     {
-        sceneController = GetComponent<SceneController>();
+        MainManager.Instance.LoadCrystall();
+        crystall.text = MainManager.Crystall.ToString();
     }
     public void OnPlayGame()
     {
         mainMenu.SetActive(false);
-        sceneController.NewTile();
+        Messenger.Broadcast(GameEvent.TILE_NEW);
+        OnScoreChanged();
     }
     public void OnDropTile()
     {
-        sceneController.DropTile();
+        Messenger<Action>.Broadcast(GameEvent.TILE_DROP, OnScoreChanged);
+    }
+    public void OnScoreChanged()
+    {
+        score.text = MainManager.Score.ToString();
+    }
+    public void GameOver()
+    {
+        mainMenu.SetActive(true);
+        backgroundButton.onClick.RemoveAllListeners();
+        backgroundButton.onClick.AddListener(Restart);
+        crystall.text = MainManager.Crystall.ToString();
+    }
+    public void Restart()
+    {
+        MainManager.Score = 0;
+        MainManager.Instance.SaveCrystall();
+        SceneManager.LoadScene(0);
     }
 }

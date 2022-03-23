@@ -11,7 +11,7 @@ public class Tile : MonoBehaviour
     }
     void Update()
     {
-        if(SceneController.Score % 2 == 0)
+        if(MainManager.Score % 2 == 0)
         {
             transform.Translate(Vector3.forward * speed * Time.deltaTime, Space.Self);
         }

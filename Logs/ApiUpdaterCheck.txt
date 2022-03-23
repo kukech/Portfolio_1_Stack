@@ -1,0 +1,20 @@
+[api-updater (non-obsolete-error-filter)] 23.03.2022 18:18:19 : Starting E:/Soft/unityapp/2020.3.24f1/Editor/Data/Tools/ScriptUpdater/APIUpdater.NonObsoleteApiUpdaterDetector.exe
+[api-updater (non-obsolete-error-filter)] 
+----------------------------------
+jit/startup time      : 11660,667ms
+moved types parse time: 1622ms
+candidates parse time : 234ms
+C# parse time         : 5592ms
+candidates check time : 393ms
+console write time    : 42ms
+
+[api-updater (non-obsolete-error-filter)] 23.03.2022 19:59:10 : Starting E:/Soft/unityapp/2020.3.24f1/Editor/Data/Tools/ScriptUpdater/APIUpdater.NonObsoleteApiUpdaterDetector.exe
+[api-updater (non-obsolete-error-filter)] 
+----------------------------------
+jit/startup time      : 4683,2679ms
+moved types parse time: 1732ms
+candidates parse time : 171ms
+C# parse time         : 4308ms
+candidates check time : 469ms
+console write time    : 15ms
+
