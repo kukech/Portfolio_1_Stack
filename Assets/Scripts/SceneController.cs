@@ -43,8 +43,8 @@ public class SceneController : MonoBehaviour
         {
             if (Mathf.Abs(deltaPos) >= lastTile.transform.localScale.z)
             {
-                Messenger.Broadcast(GameEvent.GAME_OVER);
                 MainManager.Instance.AddCrystall();
+                Messenger.Broadcast(GameEvent.GAME_OVER);
             }
             else if (Mathf.Abs(deltaPos) > maxDeltaToSuccessDrop)
             {
@@ -79,8 +79,8 @@ public class SceneController : MonoBehaviour
         {
             if (Mathf.Abs(deltaPos) >= lastTile.transform.localScale.x)
             {
-                Messenger.Broadcast(GameEvent.GAME_OVER);
                 MainManager.Instance.AddCrystall();
+                Messenger.Broadcast(GameEvent.GAME_OVER);
             }
             else if (Mathf.Abs(deltaPos) > maxDeltaToSuccessDrop)
             {

@@ -50,6 +50,6 @@ public class MainManager : MonoBehaviour
     }
     public void AddCrystall()
     {
-        Crystall = Score / 2;
+        Crystall += Score / 10;
     }
 }
