@@ -1,50 +1,50 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 
-public class SceneController : MonoBehaviour
+public class SceneController : MonoBehaviour, IObserver
 {
     [SerializeField] private Tile lastTile;
     private Tile secondTile;
+
+    private Camera mainCamera;
     private Vector3 camStartPosition;
     private Vector3 camSecondPosition;
     private Vector3 _velocity = Vector3.zero;
+
     private float maxDeltaToSuccessDrop = 0.05f;
+
+    private Subject _subjects;
     private void Awake()
     {
-        Messenger<Action>.AddListener(GameEvent.TILE_DROP, DropTile);
-        Messenger.AddListener(GameEvent.TILE_NEW, NewTile);
-    }
-    private void OnDestroy()
-    {
-        Messenger<Action>.RemoveListener(GameEvent.TILE_DROP, DropTile);
-        Messenger.RemoveListener(GameEvent.TILE_NEW, NewTile);
+        _subjects = new Subject();
+        _subjects.Attach(GetComponent<UIController>());
     }
     void Start()
     {
+        mainCamera = Camera.main;
         lastTile.enabled = false;
-        camStartPosition = Camera.main.transform.position;
+        camStartPosition = mainCamera.transform.position;
         camSecondPosition = camStartPosition;
     }
 
-    // Update is called once per frame
     void LateUpdate()
-    {
-        Camera.main.transform.position = Vector3.SmoothDamp(Camera.main.transform.position, camSecondPosition, ref _velocity, Time.deltaTime);
+    { 
+        mainCamera.transform.position = Vector3.SmoothDamp(mainCamera.transform.position, camSecondPosition, ref _velocity, Time.deltaTime * 5f);
     }
-    public void DropTile(Action callback)
+    private void DropTile()
     {
         secondTile.enabled = false;
+
         Vector2 posLastTile = new Vector2(lastTile.transform.position.x, lastTile.transform.position.z); //without Y to calculate magnitude
         Vector2 posSecondTile = new Vector2(secondTile.transform.position.x, secondTile.transform.position.z);
         float deltaPos = (posLastTile - posSecondTile).magnitude * Mathf.Sign(posLastTile.x - posSecondTile.x);
+
         if (MainManager.Score % 2 == 0)
         {
             if (Mathf.Abs(deltaPos) >= lastTile.transform.localScale.z)
             {
-                MainManager.Instance.AddCrystall();
-                Messenger.Broadcast(GameEvent.GAME_OVER);
+                _subjects.state = GameEvent.GAME_OVER;
+                _subjects.Notify();
             }
             else if (Mathf.Abs(deltaPos) > maxDeltaToSuccessDrop)
             {
@@ -60,7 +60,6 @@ public class SceneController : MonoBehaviour
                 lossTile.transform.localScale = scale;
                 lossTile.GetComponent<Rigidbody>().isKinematic = false;
                 MainManager.Score++;
-                callback();
                 camSecondPosition.y += lastTile.transform.localScale.y;
                 lastTile = secondTile;
                 NewTile();
@@ -69,7 +68,6 @@ public class SceneController : MonoBehaviour
             {
                 secondTile.transform.position = new Vector3(lastTile.transform.position.x, secondTile.transform.position.y, lastTile.transform.position.z);
                 MainManager.Score++;
-                callback();
                 camSecondPosition.y += lastTile.transform.localScale.y;
                 lastTile = secondTile;
                 NewTile();
@@ -79,8 +77,8 @@ public class SceneController : MonoBehaviour
         {
             if (Mathf.Abs(deltaPos) >= lastTile.transform.localScale.x)
             {
-                MainManager.Instance.AddCrystall();
-                Messenger.Broadcast(GameEvent.GAME_OVER);
+                _subjects.state = GameEvent.GAME_OVER;
+                _subjects.Notify();
             }
             else if (Mathf.Abs(deltaPos) > maxDeltaToSuccessDrop)
             {
@@ -96,7 +94,6 @@ public class SceneController : MonoBehaviour
                 lossTile.transform.localScale = scale;
                 lossTile.GetComponent<Rigidbody>().isKinematic = false;
                 MainManager.Score++;
-                callback();
                 camSecondPosition.y += lastTile.transform.localScale.y;
                 lastTile = secondTile;
                 NewTile();
@@ -105,7 +102,6 @@ public class SceneController : MonoBehaviour
             {
                 secondTile.transform.position = new Vector3(lastTile.transform.position.x, secondTile.transform.position.y, lastTile.transform.position.z);
                 MainManager.Score++;
-                callback();
                 camSecondPosition.y += lastTile.transform.localScale.y;
                 lastTile = secondTile;
                 NewTile();
@@ -113,7 +109,7 @@ public class SceneController : MonoBehaviour
         }
        
     }
-    public void NewTile()
+    private void NewTile()
     {
         Tile tile = Instantiate(lastTile);
         Vector3 pos = tile.transform.position;
@@ -129,5 +125,13 @@ public class SceneController : MonoBehaviour
         }
         secondTile = tile;
         secondTile.enabled = true;
+    }
+
+    public void UpdateData(GameEvent state)
+    {
+        if (state == GameEvent.TILE_DROP)
+            DropTile();
+        if (state == GameEvent.TILE_NEW)
+            NewTile();
     }
 }

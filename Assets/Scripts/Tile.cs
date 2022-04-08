@@ -6,9 +6,6 @@ public class Tile : MonoBehaviour
 {
     private float maxDistance = 3f;
     [SerializeField] private float speed = 0.1f;
-    void Start()
-    {
-    }
     void Update()
     {
         if(MainManager.Score % 2 == 0)
@@ -26,5 +23,7 @@ public class Tile : MonoBehaviour
         {
             speed = -speed;
         }
+        if (transform.position.y < -10)
+            Destroy(gameObject);
     }
 }
