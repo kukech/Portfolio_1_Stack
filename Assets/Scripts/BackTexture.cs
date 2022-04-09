@@ -8,7 +8,6 @@ public class BackTexture : MonoBehaviour, IObserver
     private int resolutionX = 1;
     private int resolutionY = 2;
 
-    [SerializeField]
     private float speedSmooting = 4f;
 
     private Color randomColorOne;
@@ -16,10 +15,6 @@ public class BackTexture : MonoBehaviour, IObserver
     private Color secondColorOne;
     private Color secondColorTwo;
 
-    private void Awake()
-    {
-
-    }
     private void Start()
     {
         if (texture == null)
@@ -28,6 +23,9 @@ public class BackTexture : MonoBehaviour, IObserver
             this.GetComponent<Renderer>().material.mainTexture = texture;
         }
         texture.wrapMode = TextureWrapMode.Clamp;
+        AdjustToCameraSize();
+
+        //init colors
         randomColorTwo = new Color(Random.value * 0.5f + 0.2f, Random.value * 0.5f + 0.2f, Random.value * 0.5f + 0.2f);
         ColorGenerate();
         secondColorOne = randomColorOne;
@@ -56,10 +54,19 @@ public class BackTexture : MonoBehaviour, IObserver
 
         randomColorTwo = new Color(newColorR, newColorG, newColorB);
     }
+    private void AdjustToCameraSize()
+    {
+        Vector3 offset = Vector3.one;
+        offset.x = Camera.main.orthographicSize * 9 / 16 * 2;
+        offset.y = Camera.main.orthographicSize * 2;
+        transform.localScale = offset;
+    }
 
     public void UpdateData(GameEvent state)
     {
         if (state == GameEvent.TILE_DROP)
             ColorGenerate();
+        if (state == GameEvent.GAME_OVER)
+            AdjustToCameraSize();
     }
 }

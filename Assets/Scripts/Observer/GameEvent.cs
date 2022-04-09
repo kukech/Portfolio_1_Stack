@@ -6,5 +6,6 @@ public enum GameEvent
 {
     TILE_DROP,
     TILE_NEW,
-    GAME_OVER
+    GAME_OVER,
+    SCORE_CHANGED
 }

@@ -3,6 +3,7 @@ using System;
 
 public class SceneController : MonoBehaviour, IObserver
 {
+    [SerializeField] private BackTexture backTexture;
     [SerializeField] private Tile lastTile;
     private Tile secondTile;
 
@@ -10,6 +11,7 @@ public class SceneController : MonoBehaviour, IObserver
     private Vector3 camStartPosition;
     private Vector3 camSecondPosition;
     private Vector3 _velocity = Vector3.zero;
+    private float speedSmooting = 4f;
 
     private float maxDeltaToSuccessDrop = 0.05f;
 
@@ -18,6 +20,7 @@ public class SceneController : MonoBehaviour, IObserver
     {
         _subjects = new Subject();
         _subjects.Attach(GetComponent<UIController>());
+        _subjects.Attach(backTexture);
     }
     void Start()
     {
@@ -29,7 +32,12 @@ public class SceneController : MonoBehaviour, IObserver
 
     void LateUpdate()
     { 
-        mainCamera.transform.position = Vector3.SmoothDamp(mainCamera.transform.position, camSecondPosition, ref _velocity, Time.deltaTime * 5f);
+        mainCamera.transform.position = Vector3.SmoothDamp(mainCamera.transform.position, camSecondPosition, ref _velocity, Time.deltaTime * speedSmooting);
+    }
+    private void ViewTower()
+    {
+        camSecondPosition.y = camStartPosition.y + lastTile.transform.localScale.y * UIController.Score / 2;
+        mainCamera.orthographicSize = mainCamera.orthographicSize + lastTile.transform.localScale.y * UIController.Score / 2;
     }
     private void DropTile()
     {
@@ -39,12 +47,12 @@ public class SceneController : MonoBehaviour, IObserver
         Vector2 posSecondTile = new Vector2(secondTile.transform.position.x, secondTile.transform.position.z);
         float deltaPos = (posLastTile - posSecondTile).magnitude * Mathf.Sign(posLastTile.x - posSecondTile.x);
 
-        if (MainManager.Score % 2 == 0)
+        if (UIController.Score % 2 == 0)
         {
             if (Mathf.Abs(deltaPos) >= lastTile.transform.localScale.z)
             {
+                ViewTower();
                 _subjects.state = GameEvent.GAME_OVER;
-                _subjects.Notify();
             }
             else if (Mathf.Abs(deltaPos) > maxDeltaToSuccessDrop)
             {
@@ -58,27 +66,23 @@ public class SceneController : MonoBehaviour, IObserver
                 lossTile.transform.Translate(-Vector3.forward * lastTile.transform.localScale.z / 2 * Mathf.Sign(deltaPos));
                 scale.z = lastTile.transform.localScale.z - secondTile.transform.localScale.z;
                 lossTile.transform.localScale = scale;
-                lossTile.GetComponent<Rigidbody>().isKinematic = false;
-                MainManager.Score++;
-                camSecondPosition.y += lastTile.transform.localScale.y;
-                lastTile = secondTile;
-                NewTile();
+                lossTile.OnFall();
+                lossTile.enabled = true;
+                
+                _subjects.state = GameEvent.SCORE_CHANGED;
             }
             else
             {
                 secondTile.transform.position = new Vector3(lastTile.transform.position.x, secondTile.transform.position.y, lastTile.transform.position.z);
-                MainManager.Score++;
-                camSecondPosition.y += lastTile.transform.localScale.y;
-                lastTile = secondTile;
-                NewTile();
+                _subjects.state = GameEvent.SCORE_CHANGED;
             }
         }
         else
         {
             if (Mathf.Abs(deltaPos) >= lastTile.transform.localScale.x)
             {
+                ViewTower();
                 _subjects.state = GameEvent.GAME_OVER;
-                _subjects.Notify();
             }
             else if (Mathf.Abs(deltaPos) > maxDeltaToSuccessDrop)
             {
@@ -92,22 +96,24 @@ public class SceneController : MonoBehaviour, IObserver
                 lossTile.transform.Translate(-Vector3.right * lastTile.transform.localScale.x / 2 * Mathf.Sign(deltaPos));
                 scale.x = lastTile.transform.localScale.x - secondTile.transform.localScale.x;
                 lossTile.transform.localScale = scale;
-                lossTile.GetComponent<Rigidbody>().isKinematic = false;
-                MainManager.Score++;
-                camSecondPosition.y += lastTile.transform.localScale.y;
-                lastTile = secondTile;
-                NewTile();
+                lossTile.OnFall();
+                lossTile.enabled = true;
+
+                _subjects.state = GameEvent.SCORE_CHANGED;
             }
             else
             {
                 secondTile.transform.position = new Vector3(lastTile.transform.position.x, secondTile.transform.position.y, lastTile.transform.position.z);
-                MainManager.Score++;
-                camSecondPosition.y += lastTile.transform.localScale.y;
-                lastTile = secondTile;
-                NewTile();
+                _subjects.state = GameEvent.SCORE_CHANGED;
             }
         }
-       
+        _subjects.Notify();
+        if (_subjects.state != GameEvent.GAME_OVER)
+        {
+            camSecondPosition.y += lastTile.transform.localScale.y;
+            lastTile = secondTile;
+            NewTile();
+        }
     }
     private void NewTile()
     {
@@ -115,7 +121,7 @@ public class SceneController : MonoBehaviour, IObserver
         Vector3 pos = tile.transform.position;
         pos.y += tile.transform.localScale.y;
         tile.transform.position = pos;
-        if (MainManager.Score % 2 == 0)
+        if (UIController.Score % 2 == 0)
         {
             tile.transform.Translate(Vector3.forward * 3, Space.Self);
         }
