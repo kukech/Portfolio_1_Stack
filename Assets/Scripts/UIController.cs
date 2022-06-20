@@ -30,17 +30,6 @@ public class UIController : MonoBehaviour, IObserver
         else crystallText.text = "0";
         Score = 0;
     }
-    public void OnPlayGame()
-    {
-        mainMenu.SetActive(false);
-        _subjects.state = GameEvent.TILE_NEW;
-        _subjects.Notify();
-    }
-    public void OnDropTile()
-    {
-        _subjects.state = GameEvent.TILE_DROP;
-        _subjects.Notify();
-    }
     private void OnScoreChange() => scoreText.text = Score.ToString();
     private void ScoreAdd() => Score++;
     private void GameOver()

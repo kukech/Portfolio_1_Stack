@@ -25,7 +25,7 @@ public class Tile : MonoBehaviour
     }
     private void TileMovement()
     {
-        if (UIController.Score % 2 == 0)
+        if (true)
         {
             transform.Translate(Vector3.forward * speed * Time.deltaTime, Space.Self);
         }

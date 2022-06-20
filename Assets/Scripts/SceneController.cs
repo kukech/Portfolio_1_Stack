@@ -3,41 +3,26 @@ using System;
 
 public class SceneController : MonoBehaviour, IObserver
 {
-    [SerializeField] private BackTexture backTexture;
     [SerializeField] private Tile lastTile;
     private Tile secondTile;
 
     private Camera mainCamera;
-    private Vector3 camStartPosition;
-    private Vector3 camSecondPosition;
-    private Vector3 _velocity = Vector3.zero;
-    private float speedSmooting = 4f;
+
 
     private float maxDeltaToSuccessDrop = 0.05f;
 
     private Subject _subjects;
     private void Awake()
     {
-        _subjects = new Subject();
         _subjects.Attach(GetComponent<UIController>());
-        _subjects.Attach(backTexture);
     }
     void Start()
     {
-        mainCamera = Camera.main;
         lastTile.enabled = false;
-        camStartPosition = mainCamera.transform.position;
-        camSecondPosition = camStartPosition;
     }
 
     void LateUpdate()
     { 
-        mainCamera.transform.position = Vector3.SmoothDamp(mainCamera.transform.position, camSecondPosition, ref _velocity, Time.deltaTime * speedSmooting);
-    }
-    private void ViewTower()
-    {
-        camSecondPosition.y = camStartPosition.y + lastTile.transform.localScale.y * UIController.Score / 2;
-        mainCamera.orthographicSize = mainCamera.orthographicSize + lastTile.transform.localScale.y * UIController.Score / 2;
     }
     private void DropTile()
     {
@@ -51,7 +36,6 @@ public class SceneController : MonoBehaviour, IObserver
         {
             if (Mathf.Abs(deltaPos) >= lastTile.transform.localScale.z)
             {
-                ViewTower();
                 _subjects.state = GameEvent.GAME_OVER;
             }
             else if (Mathf.Abs(deltaPos) > maxDeltaToSuccessDrop)
@@ -81,7 +65,6 @@ public class SceneController : MonoBehaviour, IObserver
         {
             if (Mathf.Abs(deltaPos) >= lastTile.transform.localScale.x)
             {
-                ViewTower();
                 _subjects.state = GameEvent.GAME_OVER;
             }
             else if (Mathf.Abs(deltaPos) > maxDeltaToSuccessDrop)
@@ -110,7 +93,6 @@ public class SceneController : MonoBehaviour, IObserver
         _subjects.Notify();
         if (_subjects.state != GameEvent.GAME_OVER)
         {
-            camSecondPosition.y += lastTile.transform.localScale.y;
             lastTile = secondTile;
             NewTile();
         }
