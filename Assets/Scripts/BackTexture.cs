@@ -20,7 +20,7 @@ public class BackTexture : MonoBehaviour, IObserver
         if (texture == null)
         {
             texture = new Texture2D(resolutionX, resolutionY);
-            this.GetComponent<Renderer>().material.mainTexture = texture;
+            GetComponent<Renderer>().material.mainTexture = texture;
         }
         texture.wrapMode = TextureWrapMode.Clamp;
         AdjustToCameraSize();
