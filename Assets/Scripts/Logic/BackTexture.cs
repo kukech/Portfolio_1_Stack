@@ -1,7 +1,7 @@
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class BackTexture : MonoBehaviour, IObserver
+public class BackTexture : MonoBehaviour
 {
     private Texture2D texture;
     private int resolutionX = 1;
@@ -59,13 +59,5 @@ public class BackTexture : MonoBehaviour, IObserver
         offset.x = Camera.main.orthographicSize * 9 / 16 * 2;
         offset.y = Camera.main.orthographicSize * 2;
         transform.localScale = offset;
-    }
-
-    public void UpdateData(GameEvent state)
-    {
-        if (state == GameEvent.TILE_DROP)
-            ColorGenerate();
-        if (state == GameEvent.GAME_OVER)
-            AdjustToCameraSize();
     }
 }
