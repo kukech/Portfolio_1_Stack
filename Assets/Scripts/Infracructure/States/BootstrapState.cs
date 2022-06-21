@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Infracructure.Services;
 using Assets.Scripts.Infracructure.Services.AssetManagement;
 using Assets.Scripts.Infracructure.Services.Factory;
+using Assets.Scripts.Infracructure.Services.PersistentProgress;
 using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.Infracructure.States
@@ -23,7 +24,7 @@ namespace Assets.Scripts.Infracructure.States
         public void Enter()
         {
             SceneManager.LoadScene(Initial);
-            _stateMachine.Enter<LoadGameState>();
+            _stateMachine.Enter<LoadProgressState>();
         }
 
         public void Exit()
@@ -33,8 +34,12 @@ namespace Assets.Scripts.Infracructure.States
 
         private void RegisterServices()
         {
-            _services.RegisterSingle<IAssetProvider>(new AssetProvider());
-            _services.RegisterSingle<IGameFactory>(new GameFactory(_services.Single<IAssetProvider>()));
+            _services.RegisterSingle<IProgressService>(new ProgressService());
+            _services.RegisterSingle<IGameStateMachine>(_stateMachine);
+            _services.RegisterSingle<IAssets>(new AssetProvider());
+            _services.RegisterSingle<IGameFactory>(new GameFactory(
+                _services.Single<IAssets>(),
+                _services.Single<IProgressService>()));
         }
 
     }

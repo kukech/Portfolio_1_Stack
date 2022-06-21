@@ -12,10 +12,6 @@ namespace Assets.Scripts.Infracructure.CameraLogic
         private Vector3 _velocity = Vector3.zero;
         private float speedSmooting = 4f;
 
-        private void Start()
-        {
-
-        }
 
         public void SetFocusTarget(GameObject target)
         {

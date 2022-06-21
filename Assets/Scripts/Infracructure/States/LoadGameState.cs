@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.Infracructure.CameraLogic;
-using Assets.Scripts.Infracructure.Services.Factory;
+﻿using Assets.Scripts.Infracructure.Services.Factory;
 using Assets.Scripts.Logic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,7 +7,7 @@ namespace Assets.Scripts.Infracructure.States
 {
     public class LoadGameState : IState
     {
-        private const string FirstTilePointTag = "FirstTilePoint";
+        
         private const string MainSceneName = "Main";
 
         private readonly GameStateMachine _stateMachine;
@@ -45,14 +44,14 @@ namespace Assets.Scripts.Infracructure.States
 
         private void InitTile()
         {
-            _gameFactory.CreateTile(GameObject.FindWithTag(FirstTilePointTag));
+            _gameFactory.CreateTile();
         }
 
         private void InitUI()
         {
             _gameFactory.CreateUIRoot();
-            _gameFactory.CreateBgTapButton();
-            _gameFactory.CreateMainMenu();
+            GameObject mainMenu = _gameFactory.CreateMainMenu();
+            _gameFactory.CreateBgTapButton(mainMenu);
             _gameFactory.CreateHud();
         }
     }

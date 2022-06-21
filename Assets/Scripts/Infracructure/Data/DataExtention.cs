@@ -9,5 +9,8 @@ namespace Assets.Scripts.Infracructure.Data
             vector.y += y;
             return vector;
         }
+
+        public static T ToDeserialized<T>(this string json) =>
+            JsonUtility.FromJson<T>(json);
     }
 }

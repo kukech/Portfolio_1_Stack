@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-public class SceneController : MonoBehaviour, IObserver
+public class SceneController : MonoBehaviour
 {
     [SerializeField] private Tile lastTile;
     private Tile secondTile;
@@ -115,11 +115,4 @@ public class SceneController : MonoBehaviour, IObserver
         secondTile.enabled = true;
     }
 
-    public void UpdateData(GameEvent state)
-    {
-        if (state == GameEvent.TILE_DROP)
-            DropTile();
-        if (state == GameEvent.TILE_NEW)
-            NewTile();
-    }
 }

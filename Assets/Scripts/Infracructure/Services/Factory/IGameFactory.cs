@@ -4,10 +4,10 @@ namespace Assets.Scripts.Infracructure.Services.Factory
 {
     public interface IGameFactory : IService
     {
-        void CreateTile(GameObject at);
+        void CreateTile();
         void CreateHud();
-        void CreateMainMenu();
+        GameObject CreateMainMenu();
         void CreateUIRoot();
-        GameObject CreateBgTapButton();
+        void CreateBgTapButton(GameObject menuWindow);
     }
 }

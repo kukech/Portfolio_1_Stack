@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using TMPro;
-using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -18,7 +17,6 @@ public class UIController : MonoBehaviour, IObserver
     private void Awake()
     {
         _subjects = new Subject();
-        _subjects.Attach(GetComponent<SceneController>());
         _subjects.Attach(backTexture);
     }
     private void Start()
@@ -30,8 +28,6 @@ public class UIController : MonoBehaviour, IObserver
         else crystallText.text = "0";
         Score = 0;
     }
-    private void OnScoreChange() => scoreText.text = Score.ToString();
-    private void ScoreAdd() => Score++;
     private void GameOver()
     {
         mainMenu.SetActive(true);
@@ -53,8 +49,6 @@ public class UIController : MonoBehaviour, IObserver
             GameOver();
         if (state == GameEvent.SCORE_CHANGED)
         {
-            ScoreAdd();
-            OnScoreChange();
         }
     }
 }

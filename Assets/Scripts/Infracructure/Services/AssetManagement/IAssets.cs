@@ -2,7 +2,7 @@
 
 namespace Assets.Scripts.Infracructure.Services.AssetManagement
 {
-    public interface IAssetProvider : IService
+    public interface IAssets : IService
     {
         GameObject Instantiate(string path, Vector3 at);
         GameObject Instantiate(string path);

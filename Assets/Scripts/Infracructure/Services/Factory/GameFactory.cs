@@ -1,81 +1,75 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Assets.Scripts.Infracructure.CameraLogic;
 using Assets.Scripts.Infracructure.Data;
 using Assets.Scripts.Infracructure.Services.AssetManagement;
+using Assets.Scripts.Infracructure.Services.PersistentProgress;
+using Assets.Scripts.Infracructure.UI.Windows;
+using Assets.Scripts.Logic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Assets.Scripts.Infracructure.Services.Factory
 {
     public class GameFactory : IGameFactory
     {
+        private const string FirstTilePointTag = "FirstTilePoint";
         private List<GameObject> _allTiles;
 
         private Transform _uiRoot;
-        private Button _bgButton;
-        private GameObject _mainMenu;
 
-        private readonly IAssetProvider _assetProvider;
+        private readonly IAssets _assetProvider;
+        private readonly PlayerProgress _progress;
 
-        public GameFactory(IAssetProvider assetProvider)
+        event Action GameOver;
+
+        public GameFactory(IAssets assetProvider, IProgressService progress)
         {
             _assetProvider = assetProvider;
+            _progress = progress.Progress;
         }
 
-        public void CreateTile(GameObject at)
+        public void CreateTile()
         {
-            GameObject tile = _assetProvider.Instantiate(AssetPath.TilePath, at.transform.position);
+            GameObject tile = _assetProvider.Instantiate(AssetPath.TilePath);
 
             if (_allTiles == null)
             {
                 _allTiles = new List<GameObject>();
-
+                tile.transform.position = GameObject.FindWithTag(FirstTilePointTag).transform.position;
                 tile.GetComponent<Tile>().enabled = false;
             }
             else
             {
-                tile.transform.position = tile.transform.position.AddY(tile.transform.localScale.y);
+                tile.transform.position = _allTiles[_allTiles.Count-1].transform.position.AddY(tile.transform.localScale.y);
             }
 
-            tile.transform.Rotate(0, 45, 0);
             _allTiles.Add(tile);
             CameraFollow(tile);
         }
         public void CreateUIRoot()
         {
-            GameObject root = _assetProvider.Instantiate("UI/UIRoot");
+            GameObject root = _assetProvider.Instantiate(AssetPath.UiRoot);
             _uiRoot = root.transform;
         }
 
-        public void CreateMainMenu()
+        public GameObject CreateMainMenu()
         {
-            _mainMenu = _assetProvider.Instantiate(AssetPath.MainMenuPath, _uiRoot);
+            return _assetProvider.Instantiate(AssetPath.MainMenuPath, _uiRoot);
         }
 
         public void CreateHud()
         {
-            Object.Instantiate(Resources.Load(AssetPath.HudPath), _uiRoot);
+            GameObject hud = _assetProvider.Instantiate(AssetPath.HudPath, _uiRoot);
+            HudWindow window = hud.GetComponent<HudWindow>();
+            //window.RefreshProgress(_progress);
         }
 
-        public GameObject CreateBgTapButton()
+        public void CreateBgTapButton(GameObject menuWindow)
         {
             GameObject bgButtonGO = _assetProvider.Instantiate(AssetPath.BgTapButtonPath, _uiRoot);
-            _bgButton = bgButtonGO.GetComponent<Button>();
-            _bgButton.onClick.AddListener(OnPlayGame);
-            return bgButtonGO;
-        }
-
-        private void OnPlayGame()
-        {
-            _mainMenu.gameObject.SetActive(false);
-            _bgButton.onClick.RemoveAllListeners();
-            _bgButton.onClick.AddListener(OnDropTile);
-            CreateTile(_allTiles[_allTiles.Count - 1]);
-        }
-
-        private void OnDropTile()
-        {
-            CreateTile(_allTiles[_allTiles.Count - 1]);
+            BgButton button = bgButtonGO.GetComponent<BgButton>();
+            button.Construct(menuWindow, this);
+            GameOver += button.OnGameOver;
         }
 
         private void CameraFollow(GameObject target) =>
