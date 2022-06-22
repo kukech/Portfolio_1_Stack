@@ -13,20 +13,26 @@ namespace Assets.Scripts.Infracructure.Services.Factory
     public class GameFactory : IGameFactory
     {
         private const string FirstTilePointTag = "FirstTilePoint";
+        private const float maxDeltaToSuccessDrop = 0.05f;
+
         private List<GameObject> _allTiles;
+        private GameObject LastTile => _allTiles[_allTiles.Count - 1];
 
         private Transform _uiRoot;
 
         private readonly IAssets _assetProvider;
-        private readonly PlayerProgress _progress;
+        private readonly IProgressService _progress;
 
         event Action GameOver;
 
         public GameFactory(IAssets assetProvider, IProgressService progress)
         {
             _assetProvider = assetProvider;
-            _progress = progress.Progress;
+            _progress = progress;
+
+            GameOver += CleanUp;
         }
+
 
         public void CreateTile()
         {
@@ -40,12 +46,25 @@ namespace Assets.Scripts.Infracructure.Services.Factory
             }
             else
             {
-                tile.transform.position = _allTiles[_allTiles.Count-1].transform.position.AddY(tile.transform.localScale.y);
+                tile.transform.localScale = LastTile.transform.localScale;
+                tile.transform.position = LastTile.transform.position.AddY(tile.transform.localScale.y);
             }
 
             _allTiles.Add(tile);
             CameraFollow(tile);
         }
+
+
+        public void DropTile()
+        {
+            if (!LastTile.DropTileOn(_allTiles[_allTiles.Count - 2], maxDeltaToSuccessDrop))
+            {
+                GameOver?.Invoke();
+                return;
+            }
+            CreateTile();
+        }
+
         public void CreateUIRoot()
         {
             GameObject root = _assetProvider.Instantiate(AssetPath.UiRoot);
@@ -61,7 +80,7 @@ namespace Assets.Scripts.Infracructure.Services.Factory
         {
             GameObject hud = _assetProvider.Instantiate(AssetPath.HudPath, _uiRoot);
             HudWindow window = hud.GetComponent<HudWindow>();
-            //window.RefreshProgress(_progress);
+            window.RefreshProgress(_progress.Progress);
         }
 
         public void CreateBgTapButton(GameObject menuWindow)
@@ -72,8 +91,12 @@ namespace Assets.Scripts.Infracructure.Services.Factory
             GameOver += button.OnGameOver;
         }
 
+        private void CleanUp()
+        {
+            _allTiles = null;
+        }
+
         private void CameraFollow(GameObject target) =>
             Camera.main.GetComponent<CameraFollow>().SetFocusTarget(target);
-
     }
 }

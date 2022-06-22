@@ -2,7 +2,7 @@
 
 public class Tile : MonoBehaviour
 {
-    [SerializeField] private float speed = 0.1f;
+    private float speed = 4f;
     private float maxDistance = 3f;
 
     private bool isFalling = false;
@@ -29,10 +29,7 @@ public class Tile : MonoBehaviour
         {
             transform.Translate(Vector3.forward * speed * Time.deltaTime, Space.Self);
         }
-        else
-        {
-            transform.Translate(Vector3.right * speed * Time.deltaTime, Space.Self);
-        }
+        
         if (transform.position.x > maxDistance && speed > 0)
         {
             speed = -speed;

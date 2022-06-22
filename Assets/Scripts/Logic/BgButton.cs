@@ -1,7 +1,6 @@
 ﻿using Assets.Scripts.Infracructure.Services;
 using Assets.Scripts.Infracructure.Services.Factory;
 using Assets.Scripts.Infracructure.States;
-using Assets.Scripts.Infracructure.UI.Windows;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,7 +38,7 @@ namespace Assets.Scripts.Logic
 
         private void OnDropTile()
         {
-            _factory.CreateTile();
+            _factory.DropTile();
         }
 
         private void OnRestart()

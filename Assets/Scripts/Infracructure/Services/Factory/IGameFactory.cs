@@ -9,5 +9,6 @@ namespace Assets.Scripts.Infracructure.Services.Factory
         GameObject CreateMainMenu();
         void CreateUIRoot();
         void CreateBgTapButton(GameObject menuWindow);
+        void DropTile();
     }
 }
