@@ -4,10 +4,11 @@ using UnityEngine;
 
 namespace Assets.Scripts.Infracructure.UI.Windows
 {
-    public class HudWindow : MonoBehaviour
+    public class MenuWindow : MonoBehaviour
     {
         public TextMeshProUGUI GemsCountText;
         public TextMeshProUGUI ScoreCountText;
+        public GameObject MainMenu;
 
         private IProgressService _progress;
 
@@ -23,6 +24,11 @@ namespace Assets.Scripts.Infracructure.UI.Windows
         public void RefreshScoreText()
         {
             ScoreCountText.text = _progress.Progress.Score.ToString();
+        }
+
+        public void HideMainMenuWindow()
+        {
+            MainMenu.gameObject.SetActive(false);
         }
     }
 }

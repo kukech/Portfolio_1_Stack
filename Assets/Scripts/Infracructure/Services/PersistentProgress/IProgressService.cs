@@ -6,6 +6,7 @@ namespace Assets.Scripts.Infracructure.Services.PersistentProgress
     {
         PlayerProgress Progress { get; set; }
 
+        void AddScore();
         void LoadProgress();
     }
 }

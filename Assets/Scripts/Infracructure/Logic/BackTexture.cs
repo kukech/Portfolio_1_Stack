@@ -31,19 +31,8 @@ public class BackTexture : MonoBehaviour
         secondColorTwo = randomColorTwo;
         RefreshTexture();
     }
-    private void Update()
-    {
-        RefreshTexture();
-    }
-    private void RefreshTexture()
-    {
-        secondColorOne = Color.Lerp(secondColorOne, randomColorOne, Time.deltaTime * speedSmooting);
-        secondColorTwo = Color.Lerp(secondColorTwo, randomColorTwo, Time.deltaTime * speedSmooting);
-        texture.SetPixel(0, 0, secondColorOne);
-        texture.SetPixel(0, 1, secondColorTwo);
-        texture.Apply();
-    }
-    private void ColorGenerate()
+
+    public void ColorGenerate()
     {
         randomColorOne = randomColorTwo;
 
@@ -53,6 +42,21 @@ public class BackTexture : MonoBehaviour
 
         randomColorTwo = new Color(newColorR, newColorG, newColorB);
     }
+
+    private void Update()
+    {
+        RefreshTexture();
+    }
+
+    private void RefreshTexture()
+    {
+        secondColorOne = Color.Lerp(secondColorOne, randomColorOne, Time.deltaTime * speedSmooting);
+        secondColorTwo = Color.Lerp(secondColorTwo, randomColorTwo, Time.deltaTime * speedSmooting);
+        texture.SetPixel(0, 0, secondColorOne);
+        texture.SetPixel(0, 1, secondColorTwo);
+        texture.Apply();
+    }
+
     private void AdjustToCameraSize()
     {
         Vector3 offset = Vector3.one;

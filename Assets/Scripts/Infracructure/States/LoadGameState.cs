@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Infracructure.Services.Factory;
+using Assets.Scripts.Infracructure.UI.Windows;
 using Assets.Scripts.Logic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,7 +13,7 @@ namespace Assets.Scripts.Infracructure.States
 
         private readonly GameStateMachine _stateMachine;
         private readonly IGameFactory _gameFactory;
-        private LoadingCurtain _curtain;
+        private readonly LoadingCurtain _curtain;
 
         public LoadGameState(GameStateMachine gameStateMachine, IGameFactory gameFactory, LoadingCurtain curtain)
         {
@@ -37,22 +38,20 @@ namespace Assets.Scripts.Infracructure.States
 
         public void OnLoaded(AsyncOperation operation)
         {
-            InitTile();
+            _gameFactory.InitializeTower();
             InitUI();
-            _stateMachine.Enter<GameLoopState>();
-        }
 
-        private void InitTile()
-        {
-            _gameFactory.CreateTile();
+            BackTexture backTexture = Camera.main.GetComponentInChildren<BackTexture>();
+            _gameFactory.SuccessDrop += backTexture.ColorGenerate;
+
+            _stateMachine.Enter<GameLoopState>();
         }
 
         private void InitUI()
         {
             _gameFactory.CreateUIRoot();
-            GameObject mainMenu = _gameFactory.CreateMainMenu();
+            MenuWindow mainMenu = _gameFactory.CreateMenu();
             _gameFactory.CreateBgTapButton(mainMenu);
-            _gameFactory.CreateHud();
         }
     }
 }

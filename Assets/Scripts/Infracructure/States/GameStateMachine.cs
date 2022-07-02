@@ -21,7 +21,7 @@ namespace Assets.Scripts.Infracructure.States
                     this,
                     services.Single<IProgressService>()),
                 [typeof(LoadGameState)] = new LoadGameState(this, services.Single<IGameFactory>(), curtain),
-                [typeof(GameLoopState)] = new GameLoopState()
+                [typeof(GameLoopState)] = new GameLoopState(services.Single<IGameFactory>())
             };
         }
 
