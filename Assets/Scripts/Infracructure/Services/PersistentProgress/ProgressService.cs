@@ -9,12 +9,9 @@ namespace Assets.Scripts.Infracructure.Services.PersistentProgress
 
         public PlayerProgress Progress { get; set; }
 
-        public void AddScore() =>
-            Progress.Score++;
-
         public void LoadProgress()
         {
-            int gems = PlayerPrefs.HasKey(GemsKey) ? PlayerPrefs.GetInt(GemsKey) : 0;
+            int gems = PlayerPrefs.HasKey(GemsKey) ? PlayerPrefs.GetInt(GemsKey) : 0;  
             Progress = new PlayerProgress(gems);
         }
 

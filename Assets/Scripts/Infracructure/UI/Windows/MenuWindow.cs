@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Infracructure.Services.PersistentProgress;
+﻿using System;
+using Assets.Scripts.Infracructure.Services.PersistentProgress;
 using TMPro;
 using UnityEngine;
 
@@ -29,6 +30,11 @@ namespace Assets.Scripts.Infracructure.UI.Windows
         public void HideMainMenuWindow()
         {
             MainMenu.gameObject.SetActive(false);
+        }
+
+        public void ShowMainMenuWindow()
+        {
+            MainMenu.gameObject.SetActive(true);
         }
     }
 }

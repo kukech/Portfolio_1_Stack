@@ -12,10 +12,27 @@ namespace Assets.Scripts.Infracructure.CameraLogic
         private Vector3 _velocity = Vector3.zero;
         private float speedSmooting = 4f;
 
+        private Camera _camera;
+        private float _defaultSize;
 
-        public void SetFocusTarget(GameObject target)
+        private void Awake()
         {
-            _target = target.transform.position;
+            _camera = GetComponent<Camera>();
+            _defaultSize = _camera.orthographicSize;
+        }
+        public void SetFocusPositionWithSize(Vector3 target, float size)
+        {
+            _target = target;
+            _camera.orthographicSize = size;
+        }
+        public void SetFocusPosition(Vector3 target)
+        {
+            _target = target;
+        }
+
+        public void SetDefaultSize()
+        {
+            _camera.orthographicSize = _defaultSize;
         }
 
         private void LateUpdate()
@@ -28,9 +45,9 @@ namespace Assets.Scripts.Infracructure.CameraLogic
             transform.rotation = rotation;
 
             transform.position = Vector3.SmoothDamp(
-                transform.position, 
-                position, 
-                ref _velocity, 
+                transform.position,
+                position,
+                ref _velocity,
                 Time.deltaTime * speedSmooting);
         }
 
@@ -41,6 +58,5 @@ namespace Assets.Scripts.Infracructure.CameraLogic
             followingPosition.z -= OffsetZ;
             return followingPosition;
         }
-
     }
 }

@@ -28,7 +28,7 @@ namespace Assets.Scripts.Infracructure.Logic
 
             if (IsFallCheck(previousTile, ref deltaPos))
             {
-                tile.OnFall();
+                tile.OnFallAndDontDestroy();
                 tile.enabled = true;
                 return false;
             }
