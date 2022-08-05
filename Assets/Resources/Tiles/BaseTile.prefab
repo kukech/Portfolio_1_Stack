@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5199357403564548140}
   - component: {fileID: 5199357403564548143}
   - component: {fileID: 5199357403564548142}
-  - component: {fileID: 5199357403564548129}
+  - component: {fileID: 5969875687073974942}
   m_Layer: 0
   m_Name: BaseTile
   m_TagString: Untagged
@@ -113,7 +113,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5199357403564548129
+--- !u!114 &5969875687073974942
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,7 +122,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 5199357403564548128}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 838e2b4d95fcbad4d8541d1ce97fe97b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4bfe4532dc31ff6409c8b5d8b554e3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 4
+  maxDistance: 3

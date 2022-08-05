@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Assets.Scripts.Infracructure.Data
+﻿namespace Assets.Scripts.Infracructure.Data
 {
     public class PlayerProgress
     {
@@ -17,5 +15,8 @@ namespace Assets.Scripts.Infracructure.Data
         {
             Gems = Score / 10;
         }
+
+        public void AddScore() =>
+            Score++;
     }
 }

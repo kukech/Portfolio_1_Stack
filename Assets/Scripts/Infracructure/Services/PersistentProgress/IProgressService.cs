@@ -5,8 +5,7 @@ namespace Assets.Scripts.Infracructure.Services.PersistentProgress
     public interface IProgressService : IService
     {
         PlayerProgress Progress { get; set; }
-
-        void AddScore();
         void LoadProgress();
+        void SaveProgress();
     }
 }

@@ -1,18 +1,18 @@
 ﻿using System;
+using Assets.Scripts.Infracructure.Logic;
 using Assets.Scripts.Infracructure.UI.Windows;
-using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.Infracructure.Services.Factory
 {
     public interface IGameFactory : IService
     {
-        event Action SuccessDrop;
-        void CreateTile();
+        Button BgButton { get; }
+        Tower Tower { get; }
+        void CreateTower();
         MenuWindow CreateMenu();
         void CreateUIRoot();
-        void CreateBgTapButton(MenuWindow menuWindow);
-        void DropTile();
+        void CreateBgTapButton();
         void CleanUp();
-        void InitializeTower();
     }
 }
